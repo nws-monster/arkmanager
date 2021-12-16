@@ -9,6 +9,7 @@ Based on [nhalase/steamcmd](https://github.com/nws-monster/steamcmd) and [ark-se
 - timezone is set to America/Chicago
 - enUS.UTF8 locale
 - `steamcmd` is symlinked to `/usr/bin/steamcmd`
+- `arkmanager` is installed globally
 
 ## Simple usage
 

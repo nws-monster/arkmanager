@@ -1,6 +1,6 @@
 ## Overview
 
-Based on [nhalase/steamcmd](https://hub.docker.com/repository/docker/nhalase/steamcmd).
+Based on [nhalase/steamcmd](https://hub.docker.com/repository/docker/nhalase/steamcmd) and [ark-server-tools](https://github.com/arkmanager/ark-server-tools).
 
 **NOTE: I USE THIS FOR MY HOMELAB SERVERS.** Your mileage may vary.
 

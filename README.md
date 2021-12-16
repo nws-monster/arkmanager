@@ -13,7 +13,7 @@ Based on [nhalase/steamcmd](https://github.com/nws-monster/steamcmd) and [ark-se
 
 ## Simple usage
 
-```
+```bash
 # unique per instance
 docker volume create arkmanager_theisland
 # must be shared between the cluster
@@ -27,7 +27,7 @@ If you're running multiple instances, make sure they don't have the same ports.
 
 If you're running a cluster, make sure the CLUSTER_ID is the same across all instances.
 
-```
+```bash
 SERVER_MAP=TheIsland
 CLUSTER_ID=changeit
 SESSION_NAME=changeit
@@ -42,7 +42,7 @@ RCON_PORT=27020
 
 ## Packages
 
-```
+```plain
 perl-modules
 libc6-i386
 libsdl2-2.0-0:i386

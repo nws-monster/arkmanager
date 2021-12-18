@@ -27,6 +27,7 @@ function install {
 mkdir -p /ark/log
 mkdir -p /ark/backup
 mkdir -p /ark/staging
+mkdir -p /ark/server/ShooterGame/Saved/Config/LinuxServer
 
 # exit server in case of signal INT or TERM
 trap exit INT

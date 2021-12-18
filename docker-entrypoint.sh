@@ -10,27 +10,44 @@ function backup {
     arkmanager backup
 }
 
-function stop {
+function exit {
+    log "Caught SIGINT or SIGTERM"
+    log "Creating Backup ..."
     backup
-    arkmanager stop --warn
+    log "Stopping server ..."
+    arkmanager stop
     arkmanager wait --all --stopped
 }
 
-# Stop server in case of signal INT or TERM
-trap stop INT
-trap stop TERM
-
-mkdir -p /ark/log
-
-if [ ! -f /ark/server/version.txt ]; then
+function install {
     log "Installing Ark ..."
     arkmanager install --verbose | tee -a "/ark/log/install-$(date +'%Y%m%d%H%M%S').log"
+}
+
+mkdir -p /ark/log
+mkdir -p /ark/backup
+mkdir -p /ark/staging
+
+# exit server in case of signal INT or TERM
+trap exit INT
+trap exit TERM
+
+game_ini=/etc/arkmanager/instances/main.Game.ini
+if [ ! -f $game_ini ]; then
+    echo "missing $game_ini"
+    exit 1
 fi
 
-# if [[ -n "${GAME_MOD_IDS:-}" ]]; then
-#     log "Installing Mods ..."
-#     arkmanager installmods --verbose | tee -a "/ark/log/installmods-$(date +'%Y%m%d%H%M%S').log"
-# fi
+ln -sf $game_ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Game.ini
+
+if [ ! -f /ark/server/version.txt ]; then
+    install
+fi
+
+if [[ -n "${GAME_MOD_IDS:-}" ]]; then
+    log "Installing Mods ..."
+    arkmanager installmods --verbose | tee -a "/ark/log/installmods-$(date +'%Y%m%d%H%M%S').log"
+fi
 
 log "Launching Ark Server ..."
 (arkmanager run --verbose | tee -a "/ark/log/run-$(date +'%Y%m%d%H%M%S').log") &

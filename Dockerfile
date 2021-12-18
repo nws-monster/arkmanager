@@ -61,6 +61,10 @@ COPY ${docker_entrypoint} /usr/local/bin/docker-entrypoint.sh
 
 USER ${steam_uid}:${steam_gid}
 
+WORKDIR /cluster
+
+RUN touch .hello
+
 WORKDIR /ark
 
 CMD [ "/usr/local/bin/docker-entrypoint.sh" ]

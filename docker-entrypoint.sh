@@ -42,12 +42,12 @@ if [[ ! -d /ark/google-cloud-sdk && -n "${GCLOUD_SERVICE_ACCOUNT_KEY:-}" ]]; the
     download_cloud_sdk
 fi
 
-if [[ -n ${GCLOUD_SERVICE_ACCOUNT_KEY:-} && ! -d /ark/google-cloud-sdk && ! -f /ark/google-cloud-sdk/arkmanager-sa.json ]]; then
+if [[ -n "${GCLOUD_SERVICE_ACCOUNT_KEY:-}" && ! -d /ark/google-cloud-sdk && ! -f /ark/google-cloud-sdk/arkmanager-sa.json ]]; then
     log "Decoding GCLOUD_SERVICE_ACCOUNT_KEY to /ark/google-cloud-sdk/arkmanager-sa.json ..."
     echo -e "$GCLOUD_SERVICE_ACCOUNT_KEY" | base64 -d - > /ark/google-cloud-sdk/arkmanager-sa.json
 fi
 
-if [[ -n ${GCLOUD_SERVICE_ACCOUNT_KEY:-} && -d /ark/google-cloud-sdk && -f /ark/google-cloud-sdk/arkmanager-sa.json ]]; then
+if [[ -n "${GCLOUD_SERVICE_ACCOUNT_KEY:-}" && -d /ark/google-cloud-sdk && -f /ark/google-cloud-sdk/arkmanager-sa.json ]]; then
     log "Authenticating /ark/google-cloud-sdk/arkmanager-sa.json with gcloud ..."
     bash /ark/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=/ark/google-cloud-sdk/arkmanager-sa.json
 fi

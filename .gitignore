@@ -114,3 +114,6 @@ $RECYCLE.BIN/
 
 docker-compose.yaml
 .env
+build.sh
+tag.sh
+.version

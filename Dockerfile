@@ -52,7 +52,8 @@ ENV SERVER_MAP=TheIsland \
     PORT=7777 \
     QUERY_PORT=27015 \
     RCON_ENABLED=true \
-    RCON_PORT=32330
+    RCON_PORT=32330 \
+    CLOUD_SDK_ARCHIVE=google-cloud-sdk-367.0.0-linux-x86_64.tar.gz
 
 COPY ${arkmanager_cfg} /etc/arkmanager/arkmanager.cfg
 COPY ${arkmanager_main_instance_cfg} /etc/arkmanager/instances/main.cfg

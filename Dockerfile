@@ -57,7 +57,7 @@ ENV SERVER_MAP=TheIsland \
 
 COPY ${arkmanager_cfg} /etc/arkmanager/arkmanager.cfg
 COPY ${arkmanager_main_instance_cfg} /etc/arkmanager/instances/main.cfg
-COPY ${game_ini} /etc/arkmanager/instances/main.Game.ini
+COPY --chown=${steam_uid}:root ${game_ini} /etc/arkmanager/instances/main.Game.ini
 COPY ${docker_entrypoint} /usr/local/bin/docker-entrypoint.sh
 
 USER ${steam_uid}:${steam_gid}

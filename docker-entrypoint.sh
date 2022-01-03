@@ -2,6 +2,10 @@
 
 set -eo pipefail
 
+[ -p /tmp/FIFO-${SERVER_MAP} ] && rm /tmp/FIFO-${SERVER_MAP}
+mkfifo /tmp/FIFO-${SERVER_MAP}
+export TERM=linux
+
 function log { echo "$(date +\"%Y-%m-%dT%H:%M:%SZ\"): $@"; }
 
 function backup {
@@ -15,8 +19,7 @@ function exit {
     log "Creating Backup ..."
     backup
     log "Stopping server ..."
-    arkmanager stop --warn --warnreason "Ark container terminated by Server Admin. Server is going down."
-    arkmanager wait --all --stopped
+    arkmanager stop --warn --warnreason "Ark container terminated. Server is going down."
 }
 
 function install {
@@ -33,10 +36,6 @@ mkdir -p /ark/log
 mkdir -p /ark/backup
 mkdir -p /ark/staging
 mkdir -p /ark/server/ShooterGame/Saved/Config/LinuxServer
-
-# exit server in case of signal INT or TERM
-trap exit INT
-trap exit TERM
 
 if [[ ! -d /ark/google-cloud-sdk && -n "${GCLOUD_SERVICE_ACCOUNT_KEY:-}" ]]; then
     download_cloud_sdk
@@ -69,9 +68,79 @@ if [[ -n "${GAME_MOD_IDS:-}" ]]; then
     arkmanager installmods --verbose | tee -a "/ark/log/installmods-$(date +'%Y%m%d%H%M%S').log"
 fi
 
-log "Launching Ark Server ..."
-(arkmanager run --verbose | tee -a "/ark/log/run-$(date +'%Y%m%d%H%M%S').log") &
-ARKMANPID=$!
-echo $ARKMANPID > ~/.arkmanpid
+if grep -q bAllowUnlimitedRespecs $game_ini; then
+    sed -i "s/^bAllowUnlimitedRespecs.*$/bAllowUnlimitedRespecs=${ALLOW_UNLIMITED_RESPECS:-true}/" $game_ini
+fi
+if grep -q bPvEDisableFriendlyFire $game_ini; then
+    sed -i "s/^bPvEDisableFriendlyFire.*$/bPvEDisableFriendlyFire=${PVE_DISABLE_FRIENDLY_FIRE:-false}/" $game_ini
+fi
+if grep -q bDisableFriendlyFire $game_ini; then
+    sed -i "s/^bDisableFriendlyFire.*$/bDisableFriendlyFire=${DISABLE_FRIENDLY_FIRE:-false}/" $game_ini
+fi
+if grep -q bDisableStructurePlacementCollision $game_ini; then
+    sed -i "s/^bDisableStructurePlacementCollision.*$/bDisableStructurePlacementCollision=${DISABLE_STRUCTURE_PLACEMENT_COLLISION:-true}/" $game_ini
+fi
+if grep -q MatingIntervalMultiplier $game_ini; then
+    sed -i "s/^MatingIntervalMultiplier.*$/MatingIntervalMultiplier=${MATING_INTERVAL_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q MatingSpeedMultiplier $game_ini; then
+    sed -i "s/^MatingSpeedMultiplier.*$/MatingSpeedMultiplier=${MATING_SPEED_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q EggHatchSpeedMultiplier $game_ini; then
+    sed -i "s/^EggHatchSpeedMultiplier.*$/EggHatchSpeedMultiplier=${EGG_HATCH_SPEED_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q BabyMatureSpeedMultiplier $game_ini; then
+    sed -i "s/^BabyMatureSpeedMultiplier.*$/BabyMatureSpeedMultiplier=${BABY_MATURE_SPEED_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q BabyFoodConsumptionSpeedMultiplier $game_ini; then
+    sed -i "s/^BabyFoodConsumptionSpeedMultiplier.*$/BabyFoodConsumptionSpeedMultiplier=${BABY_FOOD_CONSUMPTION_SPEED_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q BabyCuddleIntervalMultiplier $game_ini; then
+    sed -i "s/^BabyCuddleIntervalMultiplier.*$/BabyCuddleIntervalMultiplier=${BABY_CUDDLE_INTERVAL_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q BabyImprintAmountMultiplier $game_ini; then
+    sed -i "s/^BabyImprintAmountMultiplier.*$/BabyImprintAmountMultiplier=${BABY_IMPRINT_AMOUNT_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q CropGrowthSpeedMultiplier $game_ini; then
+    sed -i "s/^CropGrowthSpeedMultiplier.*$/CropGrowthSpeedMultiplier=${CROP_GROWTH_SPEED_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q CropDecaySpeedMultiplier $game_ini; then
+    sed -i "s/^CropDecaySpeedMultiplier.*$/CropDecaySpeedMultiplier=${CROP_DECAY_SPEED_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q LayEggIntervalMultiplier $game_ini; then
+    sed -i "s/^LayEggIntervalMultiplier.*$/LayEggIntervalMultiplier=${LAY_EGG_INTERVAL_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q PoopIntervalMultiplier $game_ini; then
+    sed -i "s/^PoopIntervalMultiplier.*$/PoopIntervalMultiplier=${POOP_INTERVAL_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q HairGrowthSpeedMultiplier $game_ini; then
+    sed -i "s/^HairGrowthSpeedMultiplier.*$/HairGrowthSpeedMultiplier=${HAIR_GROWTH_SPEED_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q SupplyCrateLootQualityMultiplier $game_ini; then
+    sed -i "s/^SupplyCrateLootQualityMultiplier.*$/SupplyCrateLootQualityMultiplier=${SUPPLY_CRATE_LOOT_QUALITY_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q CraftingSkillBonusMultiplier $game_ini; then
+    sed -i "s/^CraftingSkillBonusMultiplier.*$/CraftingSkillBonusMultiplier=${CRAFTING_SKILL_BONUS_MULTIPLIER:-1\.00000}/" $game_ini
+fi
 
-wait $ARKMANPID
+gusini=/ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
+if [ -f $gusini ]; then
+    if grep -q MaxGateFrameOnSaddles $gusini; then
+        sed -i "s/^MaxGateFrameOnSaddles.*$/MaxGateFrameOnSaddles=${MAX_GATE_FRAME_ON_SADDLES:-2\.00000}/" $gusini
+    else
+        sed -i "/\[ServerSettings\]/a MaxGateFrameOnSaddles=${MAX_GATE_FRAME_ON_SADDLES:-2\.00000}" $gusini
+    fi
+fi
+
+log "Launching Ark Server ..."
+
+arkmanager start
+
+log "Waiting ..."
+
+# exit server in case of signal INT or TERM
+trap exit INT
+trap exit TERM
+
+read < /tmp/FIFO-${SERVER_MAP} &
+wait

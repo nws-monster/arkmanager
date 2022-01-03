@@ -122,6 +122,9 @@ fi
 if grep -q CraftingSkillBonusMultiplier $game_ini; then
     sed -i "s/^CraftingSkillBonusMultiplier.*$/CraftingSkillBonusMultiplier=${CRAFTING_SKILL_BONUS_MULTIPLIER:-1\.00000}/" $game_ini
 fi
+if grep -q FishingLootQualityMultiplier $game_ini; then
+    sed -i "s/^FishingLootQualityMultiplier.*$/FishingLootQualityMultiplier=${FISHING_LOOT_QUALITY_MULTIPLIER:-1\.00000}/" $game_ini
+fi
 
 gusini=/ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
 if [ -f $gusini ]; then

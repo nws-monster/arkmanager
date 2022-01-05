@@ -2,7 +2,7 @@ version: "2.4"
 
 services:
   theisland:
-    image: nhalase/arkmanager:0.1.42
+    image: nhalase/arkmanager:0.1.43
     environment:
       SERVER_MAP: TheIsland
       CLUSTER_ID: ${CLUSTER_ID}
@@ -86,7 +86,7 @@ services:
       - "27015:27015/udp"
 
   lostisland:
-    image: nhalase/arkmanager:0.1.42
+    image: nhalase/arkmanager:0.1.43
     environment:
       SERVER_MAP: LostIsland
       CLUSTER_ID: ${CLUSTER_ID}
@@ -170,7 +170,7 @@ services:
       - "27016:27016/udp"
 
   valguero:
-    image: nhalase/arkmanager:0.1.42
+    image: nhalase/arkmanager:0.1.43
     environment:
       SERVER_MAP: Valguero_P
       CLUSTER_ID: ${CLUSTER_ID}
@@ -254,7 +254,7 @@ services:
       - "27017:27017/udp"
 
   ragnarok:
-    image: nhalase/arkmanager:0.1.42
+    image: nhalase/arkmanager:0.1.43
     environment:
       SERVER_MAP: Ragnarok
       CLUSTER_ID: ${CLUSTER_ID}

@@ -125,6 +125,18 @@ fi
 if grep -q FishingLootQualityMultiplier $game_ini; then
     sed -i "s/^FishingLootQualityMultiplier.*$/FishingLootQualityMultiplier=${FISHING_LOOT_QUALITY_MULTIPLIER:-1\.00000}/" $game_ini
 fi
+if grep -q BabyCuddleGracePeriodMultiplier $game_ini; then
+    sed -i "s/^BabyCuddleGracePeriodMultiplier.*$/BabyCuddleGracePeriodMultiplier=${BABY_CUDDLE_GRACE_PERIOD_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q BabyCuddleLoseImprintQualitySpeedMultiplier $game_ini; then
+    sed -i "s/^BabyCuddleLoseImprintQualitySpeedMultiplier.*$/BabyCuddleLoseImprintQualitySpeedMultiplier=${BABY_CUDDLE_LOSE_IMPRINT_QUALITY_SPEED_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q BabyImprintingStatScaleMultiplier $game_ini; then
+    sed -i "s/^BabyImprintingStatScaleMultiplier.*$/BabyImprintingStatScaleMultiplier=${BABY_IMPRINTING_STAT_SCALE_MULTIPLIER:-1\.00000}/" $game_ini
+fi
+if grep -q BabyFoodConsumptionSpeedMultiplier $game_ini; then
+    sed -i "s/^BabyFoodConsumptionSpeedMultiplier.*$/BabyFoodConsumptionSpeedMultiplier=${BABY_FOOD_CONSUMPTION_SPEED_MULTIPLIER:-1\.00000}/" $game_ini
+fi
 
 gusini=/ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
 if [ -f $gusini ]; then
